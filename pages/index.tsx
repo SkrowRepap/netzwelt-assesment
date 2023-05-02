@@ -17,12 +17,13 @@ export default function Home() {
             This is Christian Jay's entry on the assessment for Netzwelt
             application.
           </Text>
-          <Link href={"/login"}>
-            <Button colorScheme="green">See my work.</Button>
+          <Link href={"/account/login"}>
+            <Button colorScheme="green" variant={"outline"}>
+              See my work.
+            </Button>
           </Link>
         </Flex>
       </Center>
     </main>
   );
 }
-
