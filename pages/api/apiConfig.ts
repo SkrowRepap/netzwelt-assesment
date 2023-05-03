@@ -11,4 +11,4 @@ export const axiosNetzwelt = axios.create({
 export const defaultAxiosBaseURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
-    : "https://netzwelt-assesment-dx0hqwrgn-skrowrepap.vercel.app";
+    : "https://netzwelt-assesment.vercel.app";
