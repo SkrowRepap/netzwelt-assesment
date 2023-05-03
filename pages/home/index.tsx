@@ -8,37 +8,15 @@ import {
   Center,
   Flex,
   Heading,
-  List,
   ListItem,
+  Spinner,
   Text,
   UnorderedList,
 } from "@chakra-ui/react";
 import React from "react";
-import { axiosNetzwelt } from "../api/apiConfig";
-import { data } from "@/territories";
-
-type Territory = {
-  id: string;
-  name: string;
-  parent: string | null;
-};
-
-type SubTerritory = {
-  id: string;
-  name: string;
-  territory: Territory[];
-};
-
-type GroupTerritory = {
-  id: string;
-  parent: string | null;
-  name: string;
-  subTerritory: {
-    name: string;
-    id: string;
-    subTerritory: SubTerritory[];
-  }[];
-};
+import axios from "axios";
+import { groupTerritories } from "../../lib/groupTerritories";
+import useSWRImmutable from "swr/immutable";
 
 const Parent = ({ name }: { name: string }) => {
   return (
@@ -55,99 +33,63 @@ const Parent = ({ name }: { name: string }) => {
   );
 };
 
-const getAllTerritoriesURL = "/Territories/All";
-
 const fetcher = async (url: string) => {
-  const req = await axiosNetzwelt.get(url);
+  const req = await axios.get(url);
   return req.data;
 };
 
-function HomePage() {
-  const getParents = new Set(data.data.map((region) => region.parent));
-  const groupedRegions: GroupTerritory[] = [];
-
-  for (const region of data.data) {
-    if (region.parent === null) {
-      groupedRegions.push({
-        parent: region.parent,
-        subTerritory: [],
-        name: region.name,
-        id: region.id,
-      });
-    } else {
-      const parentIndex = groupedRegions.findIndex(
-        (groupedRegion) => groupedRegion.id === region.parent
-      );
-      if (parentIndex !== -1) {
-        groupedRegions[parentIndex].subTerritory.push({
-          name: region.name,
-          id: region.id,
-          subTerritory: [],
-        });
-      } else {
-        const subTerritoryIndex = groupedRegions.map((groupedRegion) =>
-          groupedRegion.subTerritory.findIndex(
-            (subTerritory) => subTerritory.id === region.parent
-          )
-        );
-        const subTerritoryParentIndex = subTerritoryIndex.findIndex(
-          (index) => index !== -1
-        );
-        if (subTerritoryParentIndex !== -1) {
-          groupedRegions[subTerritoryParentIndex].subTerritory[
-            subTerritoryIndex[subTerritoryParentIndex]
-          ].subTerritory.push({
-            id: region.id,
-            name: region.name,
-            territory: [],
-          });
-        }
-      }
-    }
-  }
+function Page() {
+  const { data, error, isLoading } = useSWRImmutable(
+    "/api/getAllTerritories",
+    fetcher
+  );
 
   return (
     <>
       <div className="min-h-screen flex items-center justify-center p-24">
         <Center>
           <Flex flexDirection={"column"} gap={"10"} alignItems={"center"}>
-            <Heading>Luzon Territories: {data.data.length}</Heading>
+            <Heading>Luzon Territories: {data?.data?.length}</Heading>
             <Text>Here are the list of territories </Text>
-            <Accordion defaultIndex={[0]} allowMultiple>
-              {groupedRegions.map((groupedRegion) => (
-                <AccordionItem key={groupedRegion.id}>
-                  <Parent name={groupedRegion.name} />
-                  <AccordionPanel pb={4}>
-                    {groupedRegion.subTerritory.map((subTerritory) => {
-                      if (subTerritory.subTerritory.length === 0) {
-                        return (
-                          <UnorderedList key={subTerritory.id}>
-                            <ListItem>{subTerritory.name}</ListItem>
-                          </UnorderedList>
-                        );
-                      } else {
-                        const subTerritoryParent =
-                          subTerritory.subTerritory.map((subTerritory) => {
-                            return (
-                              <UnorderedList key={subTerritory.id}>
-                                <ListItem>{subTerritory.name}</ListItem>
-                              </UnorderedList>
-                            );
-                          });
-                        return (
-                          <AccordionItem key={subTerritory.id}>
-                            <Parent name={subTerritory.name} />
-                            <AccordionPanel pb={4}>
-                              {subTerritoryParent}
-                            </AccordionPanel>
-                          </AccordionItem>
-                        );
-                      }
-                    })}
-                  </AccordionPanel>
-                </AccordionItem>
-              ))}
-            </Accordion>
+            {isLoading && <Spinner />}
+            {error && <div>Error fetching data</div>}
+            {!isLoading && !error && data && (
+              <Accordion defaultIndex={[0]} allowMultiple>
+                {groupTerritories(data.data).map((groupedRegion) => (
+                  <AccordionItem key={groupedRegion.id}>
+                    <Parent name={groupedRegion.name} />
+                    <AccordionPanel pb={4}>
+                      {groupedRegion.subTerritory.map((subTerritory) => {
+                        if (subTerritory.subTerritory.length === 0) {
+                          return (
+                            <UnorderedList key={subTerritory.id}>
+                              <ListItem>{subTerritory.name}</ListItem>
+                            </UnorderedList>
+                          );
+                        } else {
+                          const subTerritoryParent =
+                            subTerritory.subTerritory.map((subTerritory) => {
+                              return (
+                                <UnorderedList key={subTerritory.id}>
+                                  <ListItem>{subTerritory.name}</ListItem>
+                                </UnorderedList>
+                              );
+                            });
+                          return (
+                            <AccordionItem key={subTerritory.id}>
+                              <Parent name={subTerritory.name} />
+                              <AccordionPanel pb={4}>
+                                {subTerritoryParent}
+                              </AccordionPanel>
+                            </AccordionItem>
+                          );
+                        }
+                      })}
+                    </AccordionPanel>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
           </Flex>
         </Center>
       </div>
@@ -155,4 +97,12 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default function HomePage() {
+  return (
+    <>
+      {/* <ProtectedPage> */}
+      <Page />
+      {/* </ProtectedPage> */}
+    </>
+  );
+}
