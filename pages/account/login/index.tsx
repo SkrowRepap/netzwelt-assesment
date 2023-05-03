@@ -53,6 +53,8 @@ function LoginPage() {
     }
   };
 
+  console.log(errors);
+
   return (
     <>
       <div className="min-h-screen flex items-center justify-center p-24 bg-gray-100">
@@ -63,7 +65,10 @@ function LoginPage() {
                 <Heading size="lg"> Login</Heading>
               </CardHeader>
               <CardBody w="full">
-                <FormControl isRequired isInvalid={errors.username}>
+                <FormControl
+                  isRequired
+                  isInvalid={errors.username ? true : false}
+                >
                   <FormLabel>Username</FormLabel>
                   <Input
                     type="text"
@@ -81,7 +86,11 @@ function LoginPage() {
                   </FormErrorMessage>
                 </FormControl>
 
-                <FormControl isRequired isInvalid={errors.password} mt={6}>
+                <FormControl
+                  isRequired
+                  isInvalid={errors.password ? true : false}
+                  mt={6}
+                >
                   <FormLabel>Password</FormLabel>
                   <Input
                     type="password"
