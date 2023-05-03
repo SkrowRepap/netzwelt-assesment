@@ -14,8 +14,8 @@ export default function Home() {
         <Flex flexDirection={"column"} gap={"10"} alignItems={"center"}>
           <Heading>Netzwelt Assessment</Heading>
           <Text>
-            This is Christian Jay's entry on the assessment for Netzwelt
-            application.
+            {`This is Christian Jay's entry on the assessment for Netzwelt
+            application`}
           </Text>
           <Link href={"/account/login"}>
             <Button colorScheme="green" variant={"outline"}>
