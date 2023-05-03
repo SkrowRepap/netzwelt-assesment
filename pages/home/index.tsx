@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Button,
   Center,
   Flex,
   Heading,
@@ -12,12 +13,15 @@ import {
   Spinner,
   Text,
   UnorderedList,
+  useToast,
 } from "@chakra-ui/react";
 import React from "react";
 import axios from "axios";
 import { groupTerritories } from "../../lib/groupTerritories";
 import useSWRImmutable from "swr/immutable";
 import ProtectedPage from "@/lib/ProtectedPage";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const Parent = ({ name }: { name: string }) => {
   return (
@@ -45,9 +49,32 @@ function Page() {
     fetcher
   );
 
+  const toast = useToast();
+
+  const router = useRouter();
+
+  const logout = () => {
+    toast({
+      title: "You have been logged out",
+      status: "info",
+      duration: 3000,
+      isClosable: true,
+    });
+    signOut({
+      redirect: false,
+    });
+
+    router.push("/account/login");
+  };
+
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center p-24">
+      <div className="min-h-screen flex flex-col items-center justify-center p-24">
+        <div className="absolute top-0 right-0 p-24">
+          <Button variant={"outline"} colorScheme="red" onClick={logout}>
+            Logout
+          </Button>
+        </div>
         <Center>
           <Flex flexDirection={"column"} gap={"10"} alignItems={"center"}>
             <Heading>Luzon Territories: {data?.data?.length}</Heading>
@@ -57,7 +84,7 @@ function Page() {
             {!isLoading && !error && data && (
               <Accordion defaultIndex={[0]} allowMultiple>
                 {groupTerritories(data.data).map((groupedRegion) => (
-                  <AccordionItem key={groupedRegion.id}>
+                  <AccordionItem key={groupedRegion.id} mt={"4"}>
                     <Parent name={groupedRegion.name} />
                     <AccordionPanel pb={4}>
                       {groupedRegion.subTerritory.map((subTerritory) => {

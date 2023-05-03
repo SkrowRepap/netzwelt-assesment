@@ -6,15 +6,10 @@ import { Center, Spinner } from "@chakra-ui/react";
 
 function ProtectedPage({ children }: { children: React.ReactNode }) {
   const session = useSession();
-  console.log(
-    "🚀 ~ file: ProtectedPage.tsx:9 ~ ProtectedPage ~ session:",
-    session
-  );
   const router = useRouter();
 
   useEffect(() => {
     if (session.status === "unauthenticated") {
-      console.log("unauthenticated");
       router.push("/account/unauthorized");
     }
   }, [session.status]);

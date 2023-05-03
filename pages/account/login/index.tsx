@@ -1,4 +1,3 @@
-import { axiosNetzwelt } from "@/pages/api/apiConfig";
 import {
   Button,
   Card,
@@ -12,25 +11,46 @@ import {
   Heading,
   Input,
   Text,
+  useToast,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-
-type Inputs = {
-  username: string;
-  password: string;
-};
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 function LoginPage() {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<Inputs>();
+  } = useForm<LoginInputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const req = await axiosNetzwelt.post("/Account/SignIn", data);
-    console.log(req.data);
+  const router = useRouter();
+  const toast = useToast();
+
+  const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
+    const res = await signIn("credentials", { ...data, redirect: false });
+    if (res?.error) {
+      toast({
+        title: "Error",
+        description: res.error,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+
+    if (res?.ok) {
+      toast({
+        title: "Success",
+        description: "Login successful",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      router.push("/home");
+    }
   };
 
   return (

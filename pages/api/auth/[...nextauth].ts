@@ -1,6 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import axios from "axios";
 
 const authOptions: NextAuthOptions = {
   session: {
@@ -10,21 +11,25 @@ const authOptions: NextAuthOptions = {
     CredentialsProvider({
       type: "credentials",
       credentials: {},
-      authorize: async (credentials, req) => {
+      authorize: async (credentials) => {
         const { username, password } = credentials as {
           username: string;
           password: string;
         };
 
-        if (username !== "foo" || password !== "bar") {
+        try {
+          const getUser = await axios.post(
+            "http://localhost:3000/api/signInUser",
+            {
+              username: username,
+              password: password,
+            }
+          );
+
+          return getUser.data;
+        } catch (error) {
           throw new Error("Invalid credentials");
         }
-
-        return {
-          name: "Foo Bar",
-          email: "foo.bar@gmail.com",
-          id: "1234",
-        };
       },
     }),
   ],

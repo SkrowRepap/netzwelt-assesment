@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   return (
     <main
-      className={`min-h-screen p-24 flex items-center justify-center ${inter.className}`}
+      className={`min-h-screen p-24 flex items-center justify-center bg-slate-50 ${inter.className}`}
     >
       <Center>
         <Flex flexDirection={"column"} gap={"10"} alignItems={"center"}>
