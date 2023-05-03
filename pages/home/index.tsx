@@ -17,6 +17,7 @@ import React from "react";
 import axios from "axios";
 import { groupTerritories } from "../../lib/groupTerritories";
 import useSWRImmutable from "swr/immutable";
+import ProtectedPage from "@/lib/ProtectedPage";
 
 const Parent = ({ name }: { name: string }) => {
   return (
@@ -100,9 +101,9 @@ function Page() {
 export default function HomePage() {
   return (
     <>
-      {/* <ProtectedPage> */}
-      <Page />
-      {/* </ProtectedPage> */}
+      <ProtectedPage>
+        <Page />
+      </ProtectedPage>
     </>
   );
 }
