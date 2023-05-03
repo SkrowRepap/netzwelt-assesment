@@ -3,7 +3,6 @@
 // Path: pages\api\getAllTerritories.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { axiosNetzwelt } from "./apiConfig";
-import axios from "axios";
 
 export default async function handler(
   req: NextApiRequest,
