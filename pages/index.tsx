@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import { Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
 import Link from "next/link";
+import { defaultAxiosBaseURL } from "./api/apiConfig";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,6 +14,7 @@ export default function Home() {
       <Center>
         <Flex flexDirection={"column"} gap={"10"} alignItems={"center"}>
           <Heading>Netzwelt Assessment</Heading>
+          {defaultAxiosBaseURL}
           <Text>
             {`This is Christian Jay's entry on the assessment for Netzwelt
             application`}

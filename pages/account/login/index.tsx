@@ -17,7 +17,6 @@ import React, { useContext } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import axios from "axios";
 
 function LoginPage() {
   const {
@@ -52,8 +51,6 @@ function LoginPage() {
       router.push("/home");
     }
   };
-
-  console.log(errors);
 
   return (
     <>
