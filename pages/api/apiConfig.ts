@@ -7,3 +7,6 @@ export const axiosNetzwelt = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+export const defaultAxiosBaseURL =
+  process.env.NODE_ENV === "development" ? "http://localhost:3000" : "";

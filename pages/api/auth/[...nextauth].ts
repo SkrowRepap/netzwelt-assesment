@@ -18,13 +18,10 @@ const authOptions: NextAuthOptions = {
         };
 
         try {
-          const getUser = await axios.post(
-            "http://localhost:3000/api/signInUser",
-            {
-              username: username,
-              password: password,
-            }
-          );
+          const getUser = await axios.post("/api/signInUser", {
+            username: username,
+            password: password,
+          });
 
           return getUser.data;
         } catch (error) {

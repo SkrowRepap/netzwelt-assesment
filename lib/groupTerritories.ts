@@ -1,5 +1,4 @@
 export const groupTerritories = (data: Territory[]) => {
-  const getParents = new Set(data.map((item) => item.parent));
   const groupedRegions: GroupTerritory[] = [];
 
   for (const region of data) {
