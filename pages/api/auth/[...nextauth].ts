@@ -2,6 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
+import { defaultAxiosBaseURL } from "../apiConfig";
 
 const authOptions: NextAuthOptions = {
   session: {
@@ -18,10 +19,13 @@ const authOptions: NextAuthOptions = {
         };
 
         try {
-          const getUser = await axios.post("/api/signInUser", {
-            username: username,
-            password: password,
-          });
+          const getUser = await axios.post(
+            `${defaultAxiosBaseURL}/api/signInUser`,
+            {
+              username: username,
+              password: password,
+            }
+          );
 
           return getUser.data;
         } catch (error) {
